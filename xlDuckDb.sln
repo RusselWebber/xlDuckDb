@@ -20,6 +20,7 @@ Global
 		{B440AD88-9801-424F-9E63-D1FEFCBCE6DA}.Debug|x64.ActiveCfg = Debug|x64
 		{B440AD88-9801-424F-9E63-D1FEFCBCE6DA}.Debug|x64.Build.0 = Debug|x64
 		{B440AD88-9801-424F-9E63-D1FEFCBCE6DA}.Release|x64.ActiveCfg = Release|x64
+		{B440AD88-9801-424F-9E63-D1FEFCBCE6DA}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
