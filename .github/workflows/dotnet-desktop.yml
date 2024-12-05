@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        configuration: [Debug, Release]
+        configuration: [Release]
 
     runs-on: windows-2019 
 
@@ -38,10 +38,12 @@ jobs:
     - name: Execute unit tests
       run: nuget restore $env:Solution_Name
 
+    # Build
+    - name: Build solution
+      run: msbuild $env:Solution_Name -t:rebuild -property:Configuration=Release
+
     # Run tests
     - name: vs test solution
       #uses: tonyhallett/vstest-solution-action@v1.0.0
-      run: vstest.console.exe /Platform:x64 $env:Test_Project_Path
+      run: vstest.console.exe /Platform:x64 .\UnitTests\bin\x64\Release\UnitTests.dll
 
-    - name: Build solution
-      run: msbuild $env:Solution_Name -t:rebuild -property:Configuration=Release
