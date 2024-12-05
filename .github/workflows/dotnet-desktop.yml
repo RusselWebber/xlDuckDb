@@ -30,13 +30,17 @@ jobs:
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1
 
+   # Setup vstest
+    - name: set up VSTest
+      uses: darenm/Setup-VSTest@v1
+
     # Restore nuget packages
     - name: Execute unit tests
       run: nuget restore $env:Solution_Name
 
-    # Execute all unit tests in the solution
-    - name: Execute unit tests
-      run: dotnet test
+    # Run tests
+    - name: vs test solution
+      uses: tonyhallett/vstest-solution-action@v1.0.0
 
     - name: Build solution
       run: msbuild $env:Solution_Name -t:rebuild -property:Configuration=Release
