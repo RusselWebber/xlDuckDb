@@ -40,7 +40,8 @@ jobs:
 
     # Run tests
     - name: vs test solution
-      uses: tonyhallett/vstest-solution-action@v1.0.0
+      #uses: tonyhallett/vstest-solution-action@v1.0.0
+      run: vstest.console.exe /Platform:x64 $env:Test_Project_Path
 
     - name: Build solution
       run: msbuild $env:Solution_Name -t:rebuild -property:Configuration=Release
