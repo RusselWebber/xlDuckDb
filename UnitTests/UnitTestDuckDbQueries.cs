@@ -233,7 +233,7 @@ namespace UnitTests
         [TestMethod]
         public void TestTimeStampTz()
         {
-            var data = DuckDbHelper.ExecuteQuery("SELECT TIMESTAMPTZ '1992-09-20 11:30:00';");
+            var data = DuckDbHelper.ExecuteQuery("SELECT TIMESTAMPTZ '1992-09-20 11:30:00+01:00';");
             Assert.IsNotNull(data);
             Assert.IsInstanceOfType(data[1, 0], typeof(DateTime));
             Assert.AreEqual(new DateTime(1992, 9, 20, 10, 30, 0), data[1, 0]);
