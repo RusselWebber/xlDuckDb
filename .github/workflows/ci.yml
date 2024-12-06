@@ -12,18 +12,10 @@ on:
 jobs:
 
   build:
-
-    strategy:
-      matrix:
-        configuration: [Release]
-
     runs-on: windows-2019 
 
-    env:
-      Solution_Name: xlDuckDb.sln   
-      Test_Project_Path: UnitTests\UnitTests.csproj   
-
     steps:
+    
     - name: Checkout
       uses: actions/checkout@v4
       with:
@@ -34,20 +26,19 @@ jobs:
       uses: microsoft/setup-msbuild@v1
 
    # Setup vstest
-    - name: set up VSTest
+    - name: Setup VSTest
       uses: darenm/Setup-VSTest@v1
 
     # Restore nuget packages
-    - name: Execute unit tests
-      run: nuget restore $env:Solution_Name
+    - name: Restore packages
+      run: nuget restore xlDuckDb.sln
 
     # Build
     - name: Build solution
-      run: msbuild $env:Solution_Name -t:rebuild -property:Configuration=Release -property:ExcelDnaCreate32BitAddIn=false -property:ExcelDna64BitAddInSuffix= -property:RunExcelDnaPack=false -property:ExcelDna32BitAddInSuffix=32
+      run: msbuild xlDuckDb.sln -t:rebuild -property:Configuration=Release -property:ExcelDnaCreate32BitAddIn=false -property:ExcelDna64BitAddInSuffix= -property:RunExcelDnaPack=false -property:ExcelDna32BitAddInSuffix=32
 
     # Run tests
-    - name: vs test solution
-      #uses: tonyhallett/vstest-solution-action@v1.0.0
+    - name: Unit test
       run: vstest.console.exe /Platform:x64 .\UnitTests\bin\x64\Release\UnitTests.dll
 
     # Upload binary
