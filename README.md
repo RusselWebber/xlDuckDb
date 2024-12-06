@@ -6,6 +6,16 @@ DuckDB is an amazing tool with deep integration with Python and R, but sometimes
 
 ![Run remote Parquet](https://github.com/RusselWebber/xlDuckDb/blob/main/images/duckdb_http_parquet.gif?raw=true)
 
+# Installation
+
+Download the xlduckdb.zip file from the latest release on the right.
+
+Use the "Extract All" option on the right-click menu in Windows Explorer to extract contents of the zip file on your local PC.
+
+Right-click on the xlDuckDb.xll file and unblock it: ![alt text](https://russelwebber.github.io/xlslim-docs/html/_images/xlduckdb_unblock.gif?raw=true)
+
+Double click on the xlDuckDb.xll file to open the addin in Excel. The function _DuckDbQuery_ will be registered automatically.
+
 # Usage
 
 Any DuckDB SQL can be run and the results will be returned to Excel.
@@ -154,4 +164,4 @@ Hopefully this gives a sense of the power of DuckDB! Please read the [DuckDB doc
 
 xlDuckDb would not have been possible without the [ExcelDNA](https://github.com/excel-dna) and [DuckDB.NET](https://github.com/Giorgi/DuckDB.NET) projects.
 
-The DuckDB query in Excel functionality was extracted from the commercial product [xlSlim](https://www.xlslim.com)
+The DuckDB query in Excel functionality was extracted from the commercial product [xlSlim](https://www.xlslim.com). If you need the same functionality within a Digicert EV certificate signed addin then xlSlim is what you are looking for. xlSlim has a Windows msi installer and is installable from [Chocolatey](https://community.chocolatey.org/packages/xlslim/).
