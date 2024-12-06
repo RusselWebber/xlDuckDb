@@ -54,6 +54,6 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: xlduckdb-${{ github.sha }}
-        path: .\xlDuckDb\bin\x64\Release\xlDuckDb64.xll
+        path: .\xlDuckDb\bin\x64\Release\*.*
         retention-days: 1      
 
