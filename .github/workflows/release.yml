@@ -1,6 +1,13 @@
 name: Releases
 
 on: 
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release Tag
+        required: true
+        default: dry-run
+        type: string  
   push:
     tags:
     - 'v*'
@@ -12,7 +19,7 @@ jobs:
       contents: write
     steps:
     - uses: actions/checkout@v4
-    - uses: .github/workflows/ci.yml
+    - uses: ./.github/workflows/ci.yml
     - uses: ncipollo/release-action@v1
       with:
         artifacts: "xlduckdb*.*"
