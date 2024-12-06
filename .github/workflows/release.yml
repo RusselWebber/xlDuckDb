@@ -53,11 +53,11 @@ jobs:
 
     # Never mind that the previous step just did this...
     - name: ZIP release artifact
-        run: zip -r xlduckdb-${{ github.sha }}.zip .\xlDuckDb\bin\x64\Release\*.*
+      run: zip -r xlduckdb-${{ github.sha }}.zip .\xlDuckDb\bin\x64\Release\*.*
 
     # Create release
     - name: GitHub release
-        id: release
-        run: gh release create ${{ github.ref }} "xlduckdb-${{ github.sha }}.zip" --generate-notes --notes-start-tag ${{ steps.previousTag.outputs.tag }} 
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      id: release
+      run: gh release create ${{ github.ref }} "xlduckdb-${{ github.sha }}.zip" --generate-notes --notes-start-tag ${{ steps.previousTag.outputs.tag }} 
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
