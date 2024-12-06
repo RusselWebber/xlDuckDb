@@ -54,11 +54,13 @@ jobs:
     # Download artifact
     - name: "Download binary"
       uses: actions/download-artifact@v4
+      with:
+        path: path/to/artifacts      
 
     # Create release
     - uses: ncipollo/release-action@v1
       with:
-        artifacts: "xlduckdb-${{ github.sha }}/*.*"
+        artifacts: "path/to/artifacts/xlduckdb-${{ github.sha }}"
         makeLatest: true
         allowUpdates: true
         artifactErrorsFailBuild: true
