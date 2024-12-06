@@ -51,10 +51,14 @@ jobs:
         path: .\xlDuckDb\bin\x64\Release\*.*
         retention-days: 1      
 
+    # Download artifact
+    - name: "Download binary"
+      uses: actions/download-artifact@v4
+
     # Create release
     - uses: ncipollo/release-action@v1
       with:
-        artifacts: "xlduckdb*.*"
+        artifacts: "xlduckdb-${{ github.sha }}"
         makeLatest: true
         allowUpdates: true
         artifactErrorsFailBuild: true
