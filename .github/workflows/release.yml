@@ -1,13 +1,6 @@
 name: Releases
 
 on: 
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: Release Tag
-        required: true
-        default: dry-run
-        type: string  
   push:
     tags:
     - 'v*'
