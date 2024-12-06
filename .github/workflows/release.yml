@@ -51,7 +51,7 @@ jobs:
     # Create release
     - uses: ncipollo/release-action@v1
       with:
-        artifacts: "xlduckdb-${{ github.sha }}.zip"
+        artifacts: "xlduckdb.zip"
         makeLatest: true
         allowUpdates: true
         artifactErrorsFailBuild: true
