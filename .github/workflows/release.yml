@@ -51,22 +51,13 @@ jobs:
         path: .\xlDuckDb\bin\x64\Release\*.*
         retention-days: 1      
 
-    - name: Display structure of files
-      run: ls -R
-
-    # Download artifact
-    - name: "Download binary"
-      uses: actions/download-artifact@v4
-      with:
-        path: artifacts      
-
-    - name: Display structure of downloaded files
-      run: ls -R artifacts
+    # Never mind that the previous step just did this...
+    - name: ZIP release artifact
+        run: zip -r xlduckdb-${{ github.sha }}.zip .\xlDuckDb\bin\x64\Release\*.*
 
     # Create release
-    - uses: ncipollo/release-action@v1
-      with:
-        artifacts: "artifacts/xlduckdb-${{ github.sha }}/xlduckdb-${{ github.sha }}.zip"
-        makeLatest: true
-        allowUpdates: true
-        artifactErrorsFailBuild: true
+    - name: GitHub release
+        id: release
+        run: gh release create ${{ github.ref }} "xlduckdb-${{ github.sha }}.zip" --generate-notes --notes-start-tag ${{ steps.previousTag.outputs.tag }} 
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
