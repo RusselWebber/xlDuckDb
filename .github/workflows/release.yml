@@ -11,6 +11,7 @@ jobs:
     permissions:
       contents: write
     steps:
+    - uses: actions/checkout@v4
     - uses: ./.github/workflows/ci.yml
     - uses: ncipollo/release-action@v1
       with:
