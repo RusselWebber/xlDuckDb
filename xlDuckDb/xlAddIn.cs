@@ -1,13 +1,20 @@
-﻿using ExcelDna.Integration;
-using ExcelDna.Logging;
-using System.Diagnostics;
+﻿using System;
+using ExcelDna.Integration;
 
 namespace xlDuckDb
 {
     public class xlAddIn : IExcelAddIn
     {
+        private const string ErrorPrefix = "#ERR";
+
         public void AutoOpen()
         {
+            ExcelIntegration.RegisterUnhandledExceptionHandler(
+                ex =>
+                {
+                    if (ex is Exception e) return $"{ErrorPrefix} - {e.Message}";
+                    return $"{ErrorPrefix} - {ex}";
+                });
         }
 
         public void AutoClose()
