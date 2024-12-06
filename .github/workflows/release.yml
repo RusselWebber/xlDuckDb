@@ -51,6 +51,9 @@ jobs:
         path: .\xlDuckDb\bin\x64\Release\*.*
         retention-days: 1      
 
+    - name: Display structure of files
+      run: ls -R
+
     # Download artifact
     - name: "Download binary"
       uses: actions/download-artifact@v4
