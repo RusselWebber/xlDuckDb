@@ -46,12 +46,12 @@ jobs:
 
     # Never mind that the previous step just did this...
     - name: ZIP release artifact
-      run: Compress-Archive -Path ./xlDuckDb/bin/x64/Release/*.* -Destination xlduckdb-${{ github.sha }}.zip
+      run: Compress-Archive -Path ./xlDuckDb/bin/x64/Release/*.* -Destination xlduckdb.zip
 
     # Create release
     - uses: ncipollo/release-action@v1
       with:
-        artifacts: "xlduckdb-${{ github.sha }}.zip"
+        artifacts: "xlduckdb.zip"
         makeLatest: true
         allowUpdates: true
         artifactErrorsFailBuild: true
