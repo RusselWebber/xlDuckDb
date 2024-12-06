@@ -1,6 +1,8 @@
 name: CI
 
 on:
+  workflow_dispatch:
+
   push:
     branches: [ "main" ]
   pull_request:
@@ -40,10 +42,18 @@ jobs:
 
     # Build
     - name: Build solution
-      run: msbuild $env:Solution_Name -t:rebuild -property:Configuration=Release
+      run: msbuild $env:Solution_Name -t:rebuild -property:Configuration=Release -property:ExcelDnaCreate32BitAddIn=false -property:ExcelDna64BitAddInSuffix= -property:RunExcelDnaPack=false -property:ExcelDna32BitAddInSuffix=32
 
     # Run tests
     - name: vs test solution
       #uses: tonyhallett/vstest-solution-action@v1.0.0
       run: vstest.console.exe /Platform:x64 .\UnitTests\bin\x64\Release\UnitTests.dll
+
+    # Upload binary
+    - name: "Upload binary"
+      uses: actions/upload-artifact@v4
+      with:
+        name: xlduckdb-${{ github.sha }}
+        path: .\xlDuckDb\bin\x64\Release\xlDuckDb64.xll
+        retention-days: 1      
 
