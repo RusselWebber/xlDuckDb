@@ -12,7 +12,9 @@ Download the xlduckdb.zip file from the latest release on the right.
 
 Use the "Extract All" option on the right-click menu in Windows Explorer to extract contents of the zip file on your local PC.
 
-Right-click on the xlDuckDb.xll file and unblock it: ![alt text]https://github.com/RusselWebber/xlDuckDb/blob/main/images/xlduckdb_unblock.gif?raw=true)
+Right-click on the xlDuckDb.xll file and unblock it:
+
+![alt text](https://github.com/RusselWebber/xlDuckDb/blob/main/images/xlduckdb_unblock.gif?raw=true)
 
 Double click on the xlDuckDb.xll file to open the addin in Excel. The function _DuckDbQuery_ will be registered automatically.
 
