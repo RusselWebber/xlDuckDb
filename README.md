@@ -1,3 +1,5 @@
+![GitHub Latest Tag](https://badgen.net/github/tag/RusselWebber/xlDuckDb) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/RusselWebber/xlDuckDb/ci.yml) ![GitHub Downloads](https://badgen.net/github/assets-dl/RusselWebber/xlDuckDb)
+
 # xlDuckDb
 
 Use DuckDB within Excel with the xlDuckDb addin.
@@ -17,6 +19,10 @@ Right-click on the xlDuckDb.xll file and unblock it:
 ![alt text](https://github.com/RusselWebber/xlDuckDb/blob/main/images/xlduckdb_unblock.gif?raw=true)
 
 Double click on the xlDuckDb.xll file to open the addin in Excel. The function _DuckDbQuery_ will be registered automatically.
+
+## Requirements
+
+xlDuckDb only runs on 64-bit Excel 365 released after Sept 2018. The dynamic array resizing functionality is required.
 
 # Usage
 
@@ -162,8 +168,12 @@ Access to AWS S3 data usually requires credentials. See the DuckDB S3 API docume
 
 Hopefully this gives a sense of the power of DuckDB! Please read the [DuckDB documentation](https://duckdb.org/docs/) for more information about DuckDB’s capabilities, including how to attach to SQLite, Postgress or indeed any ODBC databases.
 
+## Why .Net Framework 4.8
+
+xlDuckDb targets .Net Framework 4.8 which may seem an odd choice. This is done to keep the Excel addin as compatible as possible. Govert van Drimmelen (the ExcelDNA founder) advises targeting .Net Framework for addins for the foreseeable future, see his full [post](https://groups.google.com/g/exceldna/c/MlYMIhrm468/m/6TJdYbBIBAAJ)
+
 ## Thanks
 
 xlDuckDb would not have been possible without the [ExcelDNA](https://github.com/excel-dna) and [DuckDB.NET](https://github.com/Giorgi/DuckDB.NET) projects.
 
-The DuckDB query in Excel functionality was extracted from the commercial product [xlSlim](https://www.xlslim.com). If you need the same functionality within a Digicert EV certificate signed addin then xlSlim is what you are looking for. xlSlim has a Windows msi installer and is installable from [Chocolatey](https://community.chocolatey.org/packages/xlslim/).
+The DuckDB query in Excel functionality was extracted from the commercial product [xlSlim](https://www.xlslim.com). If you need the same DuckDB functionality within a Digicert EV certificate signed addin then xlSlim is what you are looking for. xlSlim has a Windows .msi installer and is installable from [Chocolatey](https://community.chocolatey.org/packages/xlslim/). xlSlim's main purpose is to run Python functions within Excel as easily as possible.
