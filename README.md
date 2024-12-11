@@ -1,3 +1,5 @@
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/RusselWebber/xlDuckDb/ci.yml) ![GitHub Downloads (specific asset, latest release)](https://img.shields.io/github/downloads/RusselWebber/xlDuckDb/latest/xlDuckDb.zip)
+
 # xlDuckDb
 
 Use DuckDB within Excel with the xlDuckDb addin.
@@ -17,6 +19,10 @@ Right-click on the xlDuckDb.xll file and unblock it:
 ![alt text](https://github.com/RusselWebber/xlDuckDb/blob/main/images/xlduckdb_unblock.gif?raw=true)
 
 Double click on the xlDuckDb.xll file to open the addin in Excel. The function _DuckDbQuery_ will be registered automatically.
+
+## Requirements
+
+xlDuckDb only runs on 64-bit Excel 365 released after Sept 2018. The dynamic array functionality is required.
 
 # Usage
 
@@ -161,6 +167,10 @@ Similarly we can attach to the DuckDB stations database in S3 and query the numb
 Access to AWS S3 data usually requires credentials. See the DuckDB S3 API documentation for details about how to use secrets to provide credentials to S3.
 
 Hopefully this gives a sense of the power of DuckDB! Please read the [DuckDB documentation](https://duckdb.org/docs/) for more information about DuckDB’s capabilities, including how to attach to SQLite, Postgress or indeed any ODBC databases.
+
+## Why .Net Framework 4.8
+
+xlDuckDb targets .Net Framework 4.8 which may seem an odd choice. This is done to keep the Excel addin as compatible as possible. Govert van Drimmelen (the ExcelDNA founder) advises targeting .Net Framework for addins for the foreseeable future, see his full [post](https://groups.google.com/g/exceldna/c/MlYMIhrm468/m/6TJdYbBIBAAJ)
 
 ## Thanks
 
