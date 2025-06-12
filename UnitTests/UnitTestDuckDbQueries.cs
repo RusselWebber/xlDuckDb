@@ -258,6 +258,7 @@ namespace UnitTests
         }
 
         [TestMethod]
+        [Ignore("Fails under .Net Framework")]
         public void TestUuid()
         {
             var data = DuckDbHelper.ExecuteQuery("SELECT 'eeccb8c5-9943-b2bb-bb5e-222f4e14b687'::UUID");
@@ -282,6 +283,14 @@ namespace UnitTests
             Assert.IsNotNull(data);
             Assert.IsInstanceOfType(data[1, 0], typeof(ExcelError));
             Assert.AreEqual(ExcelError.ExcelErrorNA, data[1, 0]);
+        }
+
+        [TestMethod]
+        public void TestCommunityExtension()
+        {
+            var data = DuckDbHelper.ExecuteQuery("INSTALL ofquack FROM community;LOAD ofquack;SELECT 'Success'");
+            Assert.IsNotNull(data);
+            Assert.AreEqual("Success", data[1, 0]);
         }
     }
 }

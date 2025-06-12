@@ -38,11 +38,11 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DuckDB.NET.Bindings, Version=1.2.1.0, Culture=neutral, PublicKeyToken=1d0aa5325e915c3b, processorArchitecture=MSIL">
-      <HintPath>..\packages\DuckDB.NET.Bindings.Full.1.2.1\lib\netstandard2.0\DuckDB.NET.Bindings.dll</HintPath>
+    <Reference Include="DuckDB.NET.Bindings, Version=1.3.0.0, Culture=neutral, PublicKeyToken=1d0aa5325e915c3b, processorArchitecture=MSIL">
+      <HintPath>..\packages\DuckDB.NET.Bindings.Full.1.3.0\lib\netstandard2.0\DuckDB.NET.Bindings.dll</HintPath>
     </Reference>
-    <Reference Include="DuckDB.NET.Data, Version=1.2.1.0, Culture=neutral, PublicKeyToken=1d0aa5325e915c3b, processorArchitecture=MSIL">
-      <HintPath>..\packages\DuckDB.NET.Data.Full.1.2.1\lib\netstandard2.0\DuckDB.NET.Data.dll</HintPath>
+    <Reference Include="DuckDB.NET.Data, Version=1.3.0.0, Culture=neutral, PublicKeyToken=1d0aa5325e915c3b, processorArchitecture=MSIL">
+      <HintPath>..\packages\DuckDB.NET.Data.Full.1.3.0\lib\netstandard2.0\DuckDB.NET.Data.dll</HintPath>
     </Reference>
     <Reference Include="ExcelDna.Integration, Version=1.1.0.0, Culture=neutral, PublicKeyToken=f225e9659857edbe, processorArchitecture=MSIL">
       <HintPath>..\packages\ExcelDna.Integration.1.8.0\lib\net452\ExcelDna.Integration.dll</HintPath>
@@ -95,6 +95,6 @@
     </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>xcopy "$(SolutionDir)packages\DuckDB.NET.Bindings.Full.1.2.1\runtimes\win-x64\native\duckdb.dll" . /Y</PreBuildEvent>
+    <PreBuildEvent>xcopy "$(SolutionDir)packages\DuckDB.NET.Bindings.Full.1.3.0\runtimes\win-x64\native\duckdb.dll" . /Y</PreBuildEvent>
   </PropertyGroup>
 </Project>
