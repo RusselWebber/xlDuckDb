@@ -283,5 +283,13 @@ namespace UnitTests
             Assert.IsInstanceOfType(data[1, 0], typeof(ExcelError));
             Assert.AreEqual(ExcelError.ExcelErrorNA, data[1, 0]);
         }
+
+        [TestMethod]
+        public void TestCommunityExtension()
+        {
+            var data = DuckDbHelper.ExecuteQuery("INSTALL ofquack FROM community;LOAD ofquack;SELECT 'Success'");
+            Assert.IsNotNull(data);
+            Assert.AreEqual("Success", data[1, 0]);
+        }
     }
 }
