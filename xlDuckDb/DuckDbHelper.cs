@@ -107,7 +107,7 @@ namespace xlDuckDb
                                 }
                                 else if (uuidField[i])
                                 {
-                                    rowData[i] = ((Guid) reader.GetValue(i)).ToString();
+                                    rowData[i] = (reader.GetGuid(i)).ToString();
                                 }
                                 else
                                 {
