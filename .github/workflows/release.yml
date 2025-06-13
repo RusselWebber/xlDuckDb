@@ -21,7 +21,7 @@ jobs:
     - name: Build
       run: dotnet build --no-restore -c Release
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --no-build --verbosity normal -c Release
 
     - name: ZIP release artifact
       run: Compress-Archive -Path ./xlDuckDb/bin/Release/net6.0-windows/*.* -Destination xlduckdb.zip
