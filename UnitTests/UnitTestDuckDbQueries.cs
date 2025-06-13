@@ -1,5 +1,4 @@
-﻿using System;
-using ExcelDna.Integration;
+﻿using ExcelDna.Integration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using xlDuckDb;
 
@@ -76,8 +75,8 @@ namespace UnitTests
         {
             var data = DuckDbHelper.ExecuteQuery("SELECT make_date(1992, 9, 20)");
             Assert.IsNotNull(data);
-            Assert.IsInstanceOfType(data[1, 0], typeof(DateTime));
-            Assert.AreEqual(new DateTime(1992, 9, 20), data[1, 0]);
+            Assert.IsInstanceOfType(data[1, 0], typeof(DateOnly));
+            Assert.AreEqual(new DateOnly(1992, 9, 20), data[1, 0]);
         }
 
         [TestMethod]
@@ -159,10 +158,10 @@ namespace UnitTests
             var now = DateTime.Now;
             var data = DuckDbHelper.ExecuteQuery("SELECT current_localtime()");
             Assert.IsNotNull(data);
-            Assert.IsInstanceOfType(data[1, 0], typeof(DateTime));
-            Assert.AreEqual(now.Hour, ((DateTime) data[1, 0]).Hour);
-            Assert.AreEqual(now.Minute, ((DateTime) data[1, 0]).Minute);
-            Assert.AreEqual(now.Second, ((DateTime) data[1, 0]).Second);
+            Assert.IsInstanceOfType(data[1, 0], typeof(TimeOnly));
+            Assert.AreEqual(now.Hour, ((TimeOnly) data[1, 0]).Hour);
+            Assert.AreEqual(now.Minute, ((TimeOnly) data[1, 0]).Minute);
+            Assert.AreEqual(now.Second, ((TimeOnly) data[1, 0]).Second);
         }
 
         [TestMethod]
@@ -206,9 +205,9 @@ namespace UnitTests
         {
             var data = DuckDbHelper.ExecuteQuery("SELECT TIME '1992-09-20 11:30:00.123456'");
             Assert.IsNotNull(data);
-            Assert.IsInstanceOfType(data[1, 0], typeof(DateTime));
-            Assert.IsTrue(((DateTime) data[1, 0] - new DateTime(1899, 12, 30)).Hours == 11);
-            Assert.IsTrue(((DateTime) data[1, 0] - new DateTime(1899, 12, 30)).Minutes == 30);
+            Assert.IsInstanceOfType(data[1, 0], typeof(TimeOnly));
+            Assert.IsTrue(((TimeOnly) data[1, 0]).Hour == 11);
+            Assert.IsTrue(((TimeOnly) data[1, 0]).Minute == 30);
         }
 
         [TestMethod]
@@ -258,7 +257,6 @@ namespace UnitTests
         }
 
         [TestMethod]
-        [Ignore("Fails under .Net Framework")]
         public void TestUuid()
         {
             var data = DuckDbHelper.ExecuteQuery("SELECT 'eeccb8c5-9943-b2bb-bb5e-222f4e14b687'::UUID");

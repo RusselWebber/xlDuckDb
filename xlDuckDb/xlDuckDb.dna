@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<DnaLibrary Name="xlDuckDb" RuntimeVersion="v4.0" xmlns="http://schemas.excel-dna.net/addin/2020/07/dnalibrary">
-  <ExternalLibrary Path="xlDuckDb.dll" ExplicitExports="false" LoadFromBytes="false" Pack="false" IncludePdb="false" />
-</DnaLibrary>
