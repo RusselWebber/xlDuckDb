@@ -26,7 +26,7 @@ jobs:
     - name: ZIP release artifact
       run: Compress-Archive -Path ./xlDuckDb/bin/Release/net6.0-windows/*.* -Destination xlduckdb.zip
 
-    create release
+    # Create release
     - uses: ncipollo/release-action@v1
       with:
         artifacts: "xlduckdb.zip"
