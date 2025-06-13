@@ -24,7 +24,7 @@ jobs:
       run: dotnet test --no-build --verbosity normal -c Release
 
     - name: ZIP release artifact
-      run: Compress-Archive -Path ./xlDuckDb/bin/Release/net6.0-windows/*.* -Destination xlduckdb.zip
+      run: Compress-Archive -Path ./xlDuckDb/bin/Release/net6.0-windows/* -Destination xlduckdb.zip
 
     # Create release
     - uses: ncipollo/release-action@v1
