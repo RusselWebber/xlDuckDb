@@ -7,46 +7,24 @@ on:
 
 jobs:
   build:
-    runs-on: windows-2019
+    runs-on: windows-2022
     permissions:
       contents: write
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
       with:
-        fetch-depth: 0
+        dotnet-version: 8.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
 
-    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
-    - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v1
-
-   # Setup vstest
-    - name: Setup VSTest
-      uses: darenm/Setup-VSTest@v1
-
-    # Restore nuget packages
-    - name: Restore packages
-      run: nuget restore xlDuckDb.sln
-
-    # Build
-    - name: Build solution
-      run: msbuild xlDuckDb.sln -t:rebuild -property:Configuration=Release -property:ExcelDnaCreate32BitAddIn=false -property:ExcelDna64BitAddInSuffix= -property:RunExcelDnaPack=false -property:ExcelDna32BitAddInSuffix=32
-
-    # Run tests
-    - name: Unit test
-      run: vstest.console.exe /Platform:x64 .\UnitTests\bin\x64\Release\UnitTests.dll
-
-    # Upload binary
-    - name: "Upload binary"
-      uses: actions/upload-artifact@v4
-      with:
-        name: xlduckdb-${{ github.sha }}
-        path: .\xlDuckDb\bin\x64\Release\*.*
-        retention-days: 1      
-
-    # Never mind that the previous step just did this...
     - name: ZIP release artifact
-      run: Compress-Archive -Path ./xlDuckDb/bin/x64/Release/*.* -Destination xlduckdb.zip
+      run: Compress-Archive -Path ./xlDuckDb/bin/Release/net6.0-windows/*.* -Destination xlduckdb.zip
 
     # Create release
     - uses: ncipollo/release-action@v1
