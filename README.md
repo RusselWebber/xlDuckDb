@@ -24,7 +24,7 @@ Double click on the xlDuckDb64.xll file to open the addin in Excel. The function
 
 xlDuckDb only runs on 64-bit Excel 365 released after Sept 2018. The dynamic array resizing functionality is required.
 
-xlDuckDb v0.4.0 and above require the .Net 6.0 or later runtime. Usually a compatible version of .Net will already be installed, however the RunTime can also be downloaded from ![.Net RunTime](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+xlDuckDb v0.4.0 and above require the .Net 6.0 or later runtime. Usually a compatible version of .Net will already be installed, however the RunTime can also be downloaded from [.Net RunTime](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 
 # Usage
 
