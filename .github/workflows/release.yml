@@ -1,8 +1,6 @@
 name: Releases
 
 on: 
-  workflow_dispatch:
-
   push:
     tags:
     - 'v*'
@@ -28,10 +26,10 @@ jobs:
     - name: ZIP release artifact
       run: Compress-Archive -Path ./xlDuckDb/bin/Release/net6.0-windows/*.* -Destination xlduckdb.zip
 
-    # Create release
-    # - uses: ncipollo/release-action@v1
-      # with:
-        # artifacts: "xlduckdb.zip"
-        # makeLatest: true
-        # allowUpdates: true
-        # artifactErrorsFailBuild: true
+    create release
+    - uses: ncipollo/release-action@v1
+      with:
+        artifacts: "xlduckdb.zip"
+        makelatest: true
+        allowupdates: true
+        artifacterrorsfailbuild: true
