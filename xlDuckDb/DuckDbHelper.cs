@@ -33,6 +33,7 @@ public static class DuckDbHelper
         var floatField = new bool[reader.FieldCount];
         var timeSpanField = new bool[reader.FieldCount];
         var timeTzField = new bool[reader.FieldCount];
+        var dateOnlyField = new bool[reader.FieldCount];
         var uuidField = new bool[reader.FieldCount];
 
         for (var i = 0; i < reader.FieldCount; i++)
@@ -46,6 +47,7 @@ public static class DuckDbHelper
             floatField[i] = fieldType == typeof(float);
             timeSpanField[i] = fieldType == typeof(TimeSpan);
             timeTzField[i] = fieldType == typeof(DateTimeOffset);
+            dateOnlyField[i] = fieldType == typeof(DateOnly);
             uuidField[i] = fieldType == typeof(Guid);
         }
 
@@ -89,6 +91,10 @@ public static class DuckDbHelper
                 {
                     rowData[i] = new DateTime(1899, 12, 30) +
                                  TimeSpan.FromTicks(((DateTimeOffset) reader.GetValue(i)).Ticks);
+                }
+                else if (dateOnlyField[i])
+                {
+                    rowData[i] = reader.GetDateTime(i);
                 }
                 else if (uuidField[i])
                 {
