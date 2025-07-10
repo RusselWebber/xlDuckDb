@@ -75,8 +75,17 @@ namespace UnitTests
         {
             var data = DuckDbHelper.ExecuteQuery("SELECT make_date(1992, 9, 20)");
             Assert.IsNotNull(data);
-            Assert.IsInstanceOfType(data[1, 0], typeof(DateOnly));
-            Assert.AreEqual(new DateOnly(1992, 9, 20), data[1, 0]);
+            Assert.IsInstanceOfType(data[1, 0], typeof(DateTime));
+            Assert.AreEqual(new DateTime(1992, 9, 20), data[1, 0]);
+        }
+
+        [TestMethod]
+        public void TestDateCast()
+        {
+            var data = DuckDbHelper.ExecuteQuery("SELECT '2021-04-01'::DATE");
+            Assert.IsNotNull(data);
+            Assert.IsInstanceOfType(data[1, 0], typeof(DateTime));
+            Assert.AreEqual(new DateTime(2021, 4, 1), data[1, 0]);
         }
 
         [TestMethod]
