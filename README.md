@@ -16,7 +16,7 @@ Use the "Extract All" option on the right-click menu in Windows Explorer to extr
 
 Right-click on the xlDuckDb64.xll file and unblock it:
 
-![alt text](https://github.com/RusselWebber/xlDuckDb/blob/main/images/xlduckdb_unblock.gif?raw=true)
+![Unblock xlDuckDb](https://github.com/RusselWebber/xlDuckDb/blob/main/images/xlduckdb_unblock.gif?raw=true)
 
 Double click on the xlDuckDb64.xll file to open the addin in Excel. The function _DuckDbQuery_ will be registered automatically.
 
@@ -24,7 +24,7 @@ Double click on the xlDuckDb64.xll file to open the addin in Excel. The function
 
 xlDuckDb only runs on 64-bit Excel 365 released after Sept 2018. The dynamic array resizing functionality is required.
 
-xlDuckDb v0.4.0 and above require the .Net 6.0 or later runtime. Usually a compatible version of .Net will already be installed, however the RunTime can also be downloaded from [.Net RunTime](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+xlDuckDb v0.6.0 and above require the .Net 8.0 or later runtime. Usually a compatible version of .Net will already be installed, however the RunTime can also be downloaded from [.Net RunTime](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 
 # Usage
 
@@ -34,7 +34,55 @@ Any DuckDB SQL can be run and the results will be returned to Excel.
 
 When copying text such as SQL commands into Excel cells, add a **'** at the start so that Excel treats the input as a string.
 
-![alt text](https://russelwebber.github.io/xlslim-docs/html/_images/duckdb_copy_text_to_excel.gif?raw=true)
+![Query Copy Tip](https://russelwebber.github.io/xlslim-docs/html/_images/duckdb_copy_text_to_excel.gif?raw=true)
+
+## Querying Excel Ranges
+
+Excel ranges can be queried as if the range was a regular DuckDb table. The keyword **xlRange** is used in queries, internally xlDuckDb substitutes the Excel range data.
+
+> SELECT \* FROM **xlRange**
+
+The range is passed as the third argument to the DuckDbQuery() function.
+
+Here we copy in the 2024 F1 Drivers Points and query the range:
+
+![Querying Excel Range](images/xlduckdb_rangequery.gif)
+
+The data is in the range A1:E25
+
+![Range Data](images/ExcelRangeSourceData.png)
+
+The range is passed as the third argument:
+
+> =DuckDbQuery(A27,,A1:E25)
+
+And the query is run against the Excel range:
+
+![Range Query](images/ExcelRangeQuery.png)
+
+### Named Ranges
+
+Queries can be run against named ranges.
+
+![Named Range Data](images/ExcelRangeDefineTable.png)
+
+Here we pass the named range DriverPoints:
+
+> =DuckDbQuery(A27,,DriverPoints)
+
+![Query Named Range](images/ExcelRangeNamedRangeQuery.png)
+
+### Table Data
+
+Queries can be run against Excel table data.
+
+![Table Data](images/ExcelRangeDefineTable.png)
+
+Here we pass the table name PointsTable[All]:
+
+> =DuckDbQuery(A27,,PointsTable[All])
+
+![Query Table](images/ExcelRangeTableQuery.png)
 
 ## Querying JSON files
 
@@ -58,13 +106,13 @@ We can now easily find the countries with the most Nobel prize winners:
 
 > SELECT bornCountry AS Country, COUNT(\*) AS Number FROM 'laureate.json' GROUP BY bornCountry ORDER BY COUNT(\*) DESC LIMIT 5
 
-![alt text](https://russelwebber.github.io/xlslim-docs/html/_images/duckdb_json_top_countries.png?raw=true)
+![Second JSON Query](https://russelwebber.github.io/xlslim-docs/html/_images/duckdb_json_top_countries.png?raw=true)
 
 DuckDB supports the use of JSONPath to extract values from nested JSON fields. This allows us to extract the category and motivation of the first prize awarded to each person:
 
 > SELECT firstname, surname, prizes->>'\$[0].category' AS Category, prizes->>'\$[0].motivation'AS Motivation FROM 'laureate.json' LIMIT 5
 
-![alt text](https://russelwebber.github.io/xlslim-docs/html/_images/duckdb_json_category_and_motivation.png?raw=true)
+![JSONPath Query](https://russelwebber.github.io/xlslim-docs/html/_images/duckdb_json_category_and_motivation.png?raw=true)
 
 Full details of DuckDB’s JSON capabilities are available in their documentation.
 
@@ -74,7 +122,7 @@ Data is often stored in CSV files. Surprisingly, CSV is not a standardised data 
 
 This CSV file contains 10,000 sales records:
 
-![alt text](https://russelwebber.github.io/xlslim-docs/html/_images/duckdb_sample_csv.png?raw=true)
+![CSV Data](https://russelwebber.github.io/xlslim-docs/html/_images/duckdb_sample_csv.png?raw=true)
 
 DuckDB allows the region, item type and total revenue for each sale to be extracted with a simple SQL SELECT. Notice how, just like the JSON example above, DuckDB allows the CSV file to be treated as a regular database table:
 
@@ -82,13 +130,13 @@ DuckDB allows the region, item type and total revenue for each sale to be extrac
 
 Passing the SQL into the DuckDbQuery() function gives the following result:
 
-![alt text](https://russelwebber.github.io/xlslim-docs/html/_images/duckdb_csv_top5.png?raw=true)
+![CSV Query](https://russelwebber.github.io/xlslim-docs/html/_images/duckdb_csv_top5.png?raw=true)
 
 DuckDB has a user-friendly PIVOT statement that allows us to view the revenues in Asia and Europe broken down by item type:
 
 > PIVOT '10000SalesRecords.csv' ON Region IN ("Europe", "Asia") USING sum("Total Revenue") GROUP BY "Item Type" ORDER BY "Item Type"
 
-![alt text](https://russelwebber.github.io/xlslim-docs/html/_images/duckdb_csv_sales_pivot.png?raw=true)
+![Pivot CSV Query](https://russelwebber.github.io/xlslim-docs/html/_images/duckdb_csv_sales_pivot.png?raw=true)
 
 Data from multiple sources can be combined in a single SQL query. We can combine the JSON and CSV data to show the total sales in the countries with the most Nobel laureates:
 
@@ -110,7 +158,7 @@ Data from multiple sources can be combined in a single SQL query. We can combine
 
 This SQL uses a common table expression (CTE) to create a CountrySales result set that is joined to the JSON data. Note the use of a CASE expression ensure the country names match in both source data sets:
 
-![alt text](https://russelwebber.github.io/xlslim-docs/html/_images/duckdb_csv_sales_joined_to_json.png?raw=true)
+![Combined JSON CSV Query](https://russelwebber.github.io/xlslim-docs/html/_images/duckdb_csv_sales_joined_to_json.png?raw=true)
 
 Full details of DuckDB’s CSV capabilities are available in their documentation.
 
@@ -128,7 +176,7 @@ DuckDB allows the survival status, cabin class, sex and age of the passengers co
 
 Passing the SQL into the DuckDbQuery() function gives the following result:
 
-![alt text](https://russelwebber.github.io/xlslim-docs/html/_images/duckdb_parquet_top_survivors.png?raw=true)
+![Parquet Query](https://russelwebber.github.io/xlslim-docs/html/_images/duckdb_parquet_top_survivors.png?raw=true)
 
 We can now contrast the ages across cabin classes for survivors versus non-survivors:
 
@@ -138,7 +186,7 @@ We can now contrast the ages across cabin classes for survivors versus non-survi
 > WHERE Survived=1)
 > PIVOT Survivors ON Pclass USING AVG(Age) GROUP BY Sex
 
-![alt text](https://russelwebber.github.io/xlslim-docs/html/_images/duckdb_parquet_survivors.png?raw=true)
+![Pivot Query](https://russelwebber.github.io/xlslim-docs/html/_images/duckdb_parquet_survivors.png?raw=true)
 
 > WITH Survivors AS
 > (SELECT Pclass, Age, Sex
@@ -146,7 +194,7 @@ We can now contrast the ages across cabin classes for survivors versus non-survi
 > WHERE Survived=0)
 > PIVOT Survivors ON Pclass USING AVG(Age) GROUP BY Sex
 
-![alt text](https://russelwebber.github.io/xlslim-docs/html/_images/duckdb_parquet_nonsurvivors.png?raw=true)
+![Pivot Query by sex](https://russelwebber.github.io/xlslim-docs/html/_images/duckdb_parquet_nonsurvivors.png?raw=true)
 
 Generally, younger passengers were more likely to survive, with the curious exception of first class female passengers.
 
@@ -160,11 +208,11 @@ As an example, the holdings.parquet file can be queried from https://duckdb.org:
 
 > SELECT \* FROM 'https://duckdb.org/data/holdings.parquet';
 
-![alt text](https://russelwebber.github.io/xlslim-docs/html/_images/duckdb_parquet_remote.png?raw=true)
+![Query from URL](https://russelwebber.github.io/xlslim-docs/html/_images/duckdb_parquet_remote.png?raw=true)
 
 Similarly we can attach to the DuckDB stations database in S3 and query the number of stations in each country:
 
-![alt text](https://russelwebber.github.io/xlslim-docs/html/_images/duckdb_duckdb_remote.png?raw=true)
+![Query from S3](https://russelwebber.github.io/xlslim-docs/html/_images/duckdb_duckdb_remote.png?raw=true)
 
 Access to AWS S3 data usually requires credentials. See the DuckDB S3 API documentation for details about how to use secrets to provide credentials to S3.
 

@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 using System.Text;
 using DuckDB.NET.Data;
 using DuckDB.NET.Native;
@@ -8,7 +9,8 @@ namespace xlDuckDb;
 
 public static class DuckDbHelper
 {
-    public static object[,] ExecuteQuery(string query, string dataSource = "")
+    [Experimental("DuckDBNET001")]
+    public static object[,] ExecuteQuery(string query, string dataSource = "", string rangeAddress = "")
     {
         if (string.IsNullOrEmpty(query))
             throw new ArgumentException("Value cannot be null or empty.", nameof(query));
@@ -17,6 +19,17 @@ public static class DuckDbHelper
             new DuckDBConnection(
                 $"Data Source = {(string.IsNullOrEmpty(dataSource) ? ":memory:" : dataSource)}");
         duckDbConnection.Open();
+        
+        if (!string.IsNullOrEmpty(rangeAddress) && query.Contains("xlRange"))
+        {
+            // Register table functions
+            duckDbConnection.RegisterTableFunction<string>("xlRange", ExcelRangeTableFunctions.ResultCallback,
+                ExcelRangeTableFunctions.MapperCallback);
+
+            // Substitute in the Excel range
+            var replacement = $"xlRange($${rangeAddress}$$)";
+            query = query.Replace("xlRange", replacement);
+        }
 
         using var command = duckDbConnection.CreateCommand();
         command.CommandText = query;
@@ -109,7 +122,7 @@ public static class DuckDbHelper
             for (var i = 0; i < reader.FieldCount; i++)
                 switch (rowData[i])
                 {
-                    case DBNull _:
+                    case DBNull:
                         rowData[i] = ExcelError.ExcelErrorNA;
                         break;
                     case double d when double.IsNaN(d) || double.IsInfinity(d):
