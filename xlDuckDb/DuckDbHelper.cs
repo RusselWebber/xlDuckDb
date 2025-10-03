@@ -10,7 +10,7 @@ namespace xlDuckDb;
 public static class DuckDbHelper
 {
     [Experimental("DuckDBNET001")]
-    public static object[,] ExecuteQuery(string query, string dataSource = "", string rangeAddress = "")
+    public static object[,] ExecuteQuery(string query, string dataSource = "", string[]? rangeAddresses = null)
     {
         if (string.IsNullOrEmpty(query))
             throw new ArgumentException("Value cannot be null or empty.", nameof(query));
@@ -19,16 +19,28 @@ public static class DuckDbHelper
             new DuckDBConnection(
                 $"Data Source = {(string.IsNullOrEmpty(dataSource) ? ":memory:" : dataSource)}");
         duckDbConnection.Open();
-        
-        if (!string.IsNullOrEmpty(rangeAddress) && query.Contains("xlRange"))
+
+        if (rangeAddresses != null && query.Contains("xlRange"))
         {
             // Register table functions
             duckDbConnection.RegisterTableFunction<string>("xlRange", ExcelRangeTableFunctions.ResultCallback,
                 ExcelRangeTableFunctions.MapperCallback);
 
             // Substitute in the Excel range
-            var replacement = $"xlRange($${rangeAddress}$$)";
-            query = query.Replace("xlRange", replacement);
+            if (rangeAddresses.Length == 1)
+            {
+                var replacement = $"xlRange($${rangeAddresses[0]}$$)";
+                query = query.Replace("xlRange", replacement);
+            }
+            else
+            {
+                for (var i = 0; i < rangeAddresses.Length; i++)
+                {
+                    var placeholder = $"xlRange[{i + 1}]";
+                    var replacement = $"xlRange($${rangeAddresses[i]}$$)";
+                    query = query.Replace(placeholder, replacement);
+                }
+            }
         }
 
         using var command = duckDbConnection.CreateCommand();
