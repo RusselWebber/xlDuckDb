@@ -30,20 +30,23 @@ public class xlAddIn : IExcelAddIn
         [ExcelArgument(Name = "Database File",
             Description = "Optionally specify the DuckDB database to use. Defaults to an in-memory database")]
         string dataSource,
-        [ExcelArgument(Name = "Excel Range",
-            Description = "An Excel range can be passed and then referenced in the SQL as SELECT * FROM xlRange",
+        [ExcelArgument(Name = "Excel Ranges",
+            Description = "Excel ranges can be passed and then referenced in the SQL as SELECT * FROM xlRange, if multiple ranges are passed use xlRange[1], xlRange[2], etc",
             AllowReference = true)]
-        object r)
+        params object[] ranges)
     {
         if (ExcelDnaUtil.IsInFunctionWizard()) return ExcelError.ExcelErrorNull;
-        var rangeAddress = "";
 
-        if (r is ExcelReference excelReference)
+        var rangeAddresses = new string[ranges.Length];
+        for (var i = 0; i < ranges.Length; i++)
         {
-            rangeAddress = XlCall.Excel(XlCall.xlfReftext, excelReference, true).ToString() ?? throw new InvalidOperationException("Failed to determine the address of the supplied range.");
+            if (ranges[i] is ExcelReference excelReference)
+            {
+                rangeAddresses[i] = XlCall.Excel(XlCall.xlfReftext, excelReference, true).ToString() ?? throw new InvalidOperationException("Failed to determine the address of the supplied range.");
+            }
         }
 
-        var result = DuckDbHelper.ExecuteQuery(query, dataSource, rangeAddress);
+        var result = DuckDbHelper.ExecuteQuery(query, dataSource, rangeAddresses);
         return result.Length == 1 ? new object[,] {{ExcelError.ExcelErrorNA}} : result;
     }
 
