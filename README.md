@@ -84,6 +84,9 @@ Here we pass the table name PointsTable[All]:
 
 ![Query Table](images/ExcelRangeTableQuery.png)
 
+> [!NOTE]
+> Multiple Excel ranges can be passed to the DuckDbQuery() function. Any number of ranges can be passed as the 3rd, 4th, 5th..nth argument. These ranges can then be referenced in the SQL query as xlRange[1], xlRange[2]..xlRange[n].
+
 ## Querying JSON files
 
 Reading data from JSON files can be difficult, particularly if the data is nested.
