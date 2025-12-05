@@ -14,8 +14,10 @@ internal static class ExcelRangeTableFunctions
         if (parameters == null || parameters.Count == 0)
             throw new ArgumentException("Parameters cannot be null or empty", nameof(parameters));
                 
-        var range = parameters[0].GetValue<string>() ?? 
+        var base64Range = parameters[0].GetValue<string>() ?? 
                     throw new ArgumentException("Range parameter cannot be null");
+
+        var range = System.Text.Encoding.Unicode.GetString(Convert.FromBase64String(base64Range));
 
         var data = ExcelHelper.GetRangeValues(range) ?? throw new ArgumentException("Retrieved range cannot be null");
         var rowLength = data.GetLength(0);
