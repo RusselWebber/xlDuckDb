@@ -29,15 +29,17 @@ public static class DuckDbHelper
             // Substitute in the Excel range
             if (rangeAddresses.Length == 1)
             {
-                var replacement = $"xlRange($${rangeAddresses[0]}$$)";
+                var rangeAddress = Convert.ToBase64String(Encoding.Unicode.GetBytes(rangeAddresses[0]));
+                var replacement = $"xlRange($${rangeAddress}$$)";
                 query = query.Replace("xlRange", replacement);
             }
             else
             {
                 for (var i = 0; i < rangeAddresses.Length; i++)
                 {
+                    var rangeAddress = Convert.ToBase64String(Encoding.Unicode.GetBytes(rangeAddresses[i]));
                     var placeholder = $"xlRange[{i + 1}]";
-                    var replacement = $"xlRange($${rangeAddresses[i]}$$)";
+                    var replacement = $"xlRange($${rangeAddress}$$)";
                     query = query.Replace(placeholder, replacement);
                 }
             }
