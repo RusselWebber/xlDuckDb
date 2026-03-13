@@ -192,6 +192,16 @@ public class UnitTestDuckDbQueries
         Assert.IsInstanceOfType(data[1, 0], typeof(string));
         Assert.AreEqual("{\"duck\": 42}", data[1, 0]);
     }
+        
+    [TestMethod]
+    [Ignore("DuckDb.Net does not support variants yet")]
+    public void TestVariant()
+    {
+        var data = DuckDbHelper.ExecuteQuery("SELECT 42::VARIANT");
+        Assert.IsNotNull(data);
+        Assert.IsInstanceOfType(data[1, 0], typeof(int));
+        Assert.AreEqual(42, data[1, 0]);
+    }
 
     [TestMethod]
     public void TestSmallInteger()
@@ -297,7 +307,7 @@ public class UnitTestDuckDbQueries
     [TestMethod]
     public void TestCommunityExtension()
     {
-        var data = DuckDbHelper.ExecuteQuery("INSTALL ofquack FROM community;LOAD ofquack;SELECT 'Success'");
+        var data = DuckDbHelper.ExecuteQuery("INSTALL quack FROM community;LOAD quack;SELECT 'Success'");
         Assert.IsNotNull(data);
         Assert.AreEqual("Success", data[1, 0]);
     }
