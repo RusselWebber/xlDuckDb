@@ -36,6 +36,8 @@ internal static class ExcelHelper
                 throw new InvalidOperationException($"Could not extract sheet name from range address '{address}'.");
 
             var sheetName = address[..sheetDelimiterIndex];
+            // Remove surrounding single quotes if present (external references like '[file.xlsx]Sheet1')
+            sheetName = sheetName.Trim('\'');
             var sheetRef = (ExcelReference?)XlCall.Excel(XlCall.xlSheetId, sheetName)
                 ?? throw new InvalidOperationException($"Could not resolve sheet '{sheetName}'.");
 
