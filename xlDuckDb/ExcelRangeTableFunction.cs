@@ -33,6 +33,7 @@ internal static class ExcelRangeTableFunctions
         var dataTypes = new Type[colLength];
         var columnNames = new string[colLength];
         var columns = new List<ColumnInfo>(colLength);
+        var nameCounts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
         for (var i = 0; i < colLength; i++)
         {
             dataTypes[i] = data[1, i] switch
@@ -41,8 +42,19 @@ internal static class ExcelRangeTableFunctions
                 bool => typeof(bool),
                 _ => typeof(string)
             };
-            columnNames[i] = data[0, i].ToString() ?? string.Empty;
-            columns.Add(new ColumnInfo(columnNames[i], dataTypes[i]));
+            var originalName = data[0, i]?.ToString() ?? string.Empty;
+            var name = string.IsNullOrWhiteSpace(originalName) ? $"col_{i + 1}" : originalName;
+            if (nameCounts.TryGetValue(name, out var count))
+            {
+                nameCounts[name] = count + 1;
+                name = $"{name}_{count}";
+            }
+            else
+            {
+                nameCounts[name] = 1;
+            }
+            columnNames[i] = name;
+            columns.Add(new ColumnInfo(name, dataTypes[i]));
         }
 
         var dataList = new List<RowDataAndTypes>();
