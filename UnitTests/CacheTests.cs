@@ -11,26 +11,27 @@ public class CacheTests
         var key = "test-array";
         
         // Should not exist initially
-        Xunit.Assert.Null(xlAddIn.GetCachedRangeData(key));
+        Assert.Null(xlAddIn.GetCachedRangeData(key));
         
         // Add to cache
         var addMethod = typeof(xlAddIn).GetMethod("CacheRangeData", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.FlattenHierarchy);
+        Assert.NotNull(addMethod); // Ensure method exists
         addMethod.Invoke(null, new object[] { key, arr });
         
         // Should retrieve
         var cached = xlAddIn.GetCachedRangeData(key);
-        Xunit.Assert.NotNull(cached);
-        Xunit.Assert.Equal(arr, cached);
+        Assert.NotNull(cached);
+        Assert.Equal(arr, cached!); // ! because NotNull above
         
         // Remove
-        Xunit.Assert.True(xlAddIn.RemoveCachedRangeData(key));
-        Xunit.Assert.Null(xlAddIn.GetCachedRangeData(key));
+        Assert.True(xlAddIn.RemoveCachedRangeData(key));
+        Assert.Null(xlAddIn.GetCachedRangeData(key));
     }
 
     [Fact]
     public void RemoveCachedRangeData_ReturnsFalseIfNotFound()
     {
-        Xunit.Assert.False(xlAddIn.RemoveCachedRangeData("nonexistent-key"));
+        Assert.False(xlAddIn.RemoveCachedRangeData("nonexistent-key"));
     }
 
     [Fact]
@@ -38,7 +39,7 @@ public class CacheTests
     {
         // Should throw if passed an unsupported type
 #pragma warning disable DuckDBNET001
-        Xunit.Assert.Throws<ArgumentException>(() =>
+        Assert.Throws<ArgumentException>(() =>
             xlAddIn.DuckDbQuery("SELECT 1", "", new object[] { 123 })
         );
 #pragma warning restore DuckDBNET001
