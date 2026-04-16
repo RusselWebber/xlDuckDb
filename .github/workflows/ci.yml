@@ -1,21 +1,21 @@
 name: CI
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 permissions:
   contents: read
 
 on:
   workflow_dispatch:
-  
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
 jobs:
-
   build:
     runs-on: windows-2022 
-
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET

@@ -14,12 +14,15 @@ internal static class ExcelRangeTableFunctions
         if (parameters == null || parameters.Count == 0)
             throw new ArgumentException("Parameters cannot be null or empty", nameof(parameters));
                 
-        var base64Range = parameters[0].GetValue<string>() ?? 
-                    throw new ArgumentException("Range parameter cannot be null");
+        var base64CacheKey = parameters[0].GetValue<string>() ?? 
+                    throw new ArgumentException("Cache key parameter cannot be null");
 
-        var range = System.Text.Encoding.Unicode.GetString(Convert.FromBase64String(base64Range));
+        var cacheKey = System.Text.Encoding.Unicode.GetString(Convert.FromBase64String(base64CacheKey));
 
-        var data = ExcelHelper.GetRangeValues(range) ?? throw new ArgumentException("Retrieved range cannot be null");
+        // Get data from cache
+        var data = xlAddIn.GetCachedRangeData(cacheKey) ?? 
+                   throw new ArgumentException("Range data not found in cache");
+        
         var rowLength = data.GetLength(0);
         var colLength = data.GetLength(1);
 

@@ -10,7 +10,7 @@ namespace xlDuckDb;
 public static class DuckDbHelper
 {
     [Experimental("DuckDBNET001")]
-    public static object[,] ExecuteQuery(string query, string dataSource = "", string[]? rangeAddresses = null)
+    public static object[,] ExecuteQuery(string query, string dataSource = "", string[]? cacheKeys = null)
     {
         if (string.IsNullOrEmpty(query))
             throw new ArgumentException("Value cannot be null or empty.", nameof(query));
@@ -20,26 +20,26 @@ public static class DuckDbHelper
                 $"Data Source = {(string.IsNullOrEmpty(dataSource) ? ":memory:" : dataSource)}");
         duckDbConnection.Open();
 
-        if (rangeAddresses != null && query.Contains("xlRange"))
+        if (cacheKeys != null && query.Contains("xlRange"))
         {
             // Register table functions
             duckDbConnection.RegisterTableFunction<string>("xlRange", ExcelRangeTableFunctions.ResultCallback,
                 ExcelRangeTableFunctions.MapperCallback);
 
-            // Substitute in the Excel range
-            if (rangeAddresses.Length == 1)
+            // Substitute in the Excel range - encode cache keys as base64 for SQL parameter passing
+            if (cacheKeys.Length == 1)
             {
-                var rangeAddress = Convert.ToBase64String(Encoding.Unicode.GetBytes(rangeAddresses[0]));
-                var replacement = $"xlRange($${rangeAddress}$$)";
+                var base64CacheKey = Convert.ToBase64String(Encoding.Unicode.GetBytes(cacheKeys[0]));
+                var replacement = $"xlRange($${base64CacheKey}$$)";
                 query = query.Replace("xlRange", replacement);
             }
             else
             {
-                for (var i = 0; i < rangeAddresses.Length; i++)
+                for (var i = 0; i < cacheKeys.Length; i++)
                 {
-                    var rangeAddress = Convert.ToBase64String(Encoding.Unicode.GetBytes(rangeAddresses[i]));
+                    var base64CacheKey = Convert.ToBase64String(Encoding.Unicode.GetBytes(cacheKeys[i]));
                     var placeholder = $"xlRange[{i + 1}]";
-                    var replacement = $"xlRange($${rangeAddress}$$)";
+                    var replacement = $"xlRange($${base64CacheKey}$$)";
                     query = query.Replace(placeholder, replacement);
                 }
             }
