@@ -1,5 +1,6 @@
 ﻿using ExcelDna.Integration;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 using xlDuckDb;
 using Xunit;
 
@@ -254,5 +255,52 @@ public class UnitTestDuckDbQueries
         Assert.NotNull(data);
         Assert.IsType<DateTime>(data[1, 0]);
         Assert.Equal(new DateTime(1992, 9, 20, 10, 30, 0), data[1, 0]);
+    }
+
+    [Fact]
+    public void TestList()
+    {
+        var data = DuckDbHelper.ExecuteQuery("SELECT ['apple', 'banana', 'cherry']");
+        Assert.NotNull(data);
+        var json = Assert.IsType<string>(data[1, 0]);
+        var list = JsonSerializer.Deserialize<List<string>>(json);
+        Assert.NotNull(list);
+        Assert.Equal(3, list.Count);
+        Assert.Equal("apple", list[0]);
+        Assert.Equal("banana", list[1]);
+        Assert.Equal("cherry", list[2]);
+    }
+
+    [Fact]
+    public void TestNullList()
+    {
+        var data = DuckDbHelper.ExecuteQuery("SELECT NULL::INTEGER[]");
+        Assert.NotNull(data);
+        Assert.IsType<ExcelError>(data[1, 0]);
+        Assert.Equal(ExcelError.ExcelErrorNA, data[1, 0]);
+    }
+
+    [Fact]
+    public void TestStruct()
+    {
+        var data = DuckDbHelper.ExecuteQuery("SELECT {'id': 101, 'status': 'active'}");
+        Assert.NotNull(data);
+        var json = Assert.IsType<string>(data[1, 0]);
+        var dict = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json);
+        Assert.NotNull(dict);
+        Assert.Equal(101, dict["id"].GetInt32());
+        Assert.Equal("active", dict["status"].GetString());
+    }
+
+    [Fact]
+    public void TestMap()
+    {
+        var data = DuckDbHelper.ExecuteQuery("SELECT map(['color', 'shape'], ['red', 'circle'])");
+        Assert.NotNull(data);
+        var json = Assert.IsType<string>(data[1, 0]);
+        var dict = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
+        Assert.NotNull(dict);
+        Assert.Equal("red", dict["color"]);
+        Assert.Equal("circle", dict["shape"]);
     }
 }

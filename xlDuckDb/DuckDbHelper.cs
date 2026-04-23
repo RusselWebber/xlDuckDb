@@ -1,6 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Text;
+using System.Text.Json;
 using DuckDB.NET.Data;
 using DuckDB.NET.Native;
 using ExcelDna.Integration;
@@ -62,6 +64,7 @@ public static class DuckDbHelper
         var timeTzField = new bool[reader.FieldCount];
         var dateOnlyField = new bool[reader.FieldCount];
         var uuidField = new bool[reader.FieldCount];
+        var jsonSerializeField = new bool[reader.FieldCount];
 
         for (var i = 0; i < reader.FieldCount; i++)
         {
@@ -76,6 +79,8 @@ public static class DuckDbHelper
             timeTzField[i] = fieldType == typeof(DateTimeOffset);
             dateOnlyField[i] = fieldType == typeof(DateOnly);
             uuidField[i] = fieldType == typeof(Guid);
+            jsonSerializeField[i] = typeof(IList).IsAssignableFrom(fieldType) ||
+                                    typeof(IDictionary).IsAssignableFrom(fieldType);
         }
 
         // Add the first row of column names
@@ -126,6 +131,12 @@ public static class DuckDbHelper
                 else if (uuidField[i])
                 {
                     rowData[i] = (reader.GetGuid(i)).ToString();
+                }
+                else if (jsonSerializeField[i])
+                {
+                    rowData[i] = reader.IsDBNull(i)
+                        ? (object)ExcelError.ExcelErrorNA
+                        : JsonSerializer.Serialize(reader.GetValue(i));
                 }
                 else
                 {
