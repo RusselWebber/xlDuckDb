@@ -122,8 +122,8 @@ internal static class ExcelHelper
     /// </summary>
     private static object NormalizeExcelValue(object? value) => value switch
     {
-        double d => d,
-        string s => s,
+        double d => double.IsNaN(d) || double.IsInfinity(d) ? DBNull.Value : d,
+        string s => string.IsNullOrEmpty(s) ? DBNull.Value : s,
         bool b => b,
         ExcelError => DBNull.Value,
         ExcelEmpty => DBNull.Value,

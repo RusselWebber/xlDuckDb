@@ -32,19 +32,10 @@ internal static class ExcelRangeTableFunctions
             throw new ArgumentException("At least one column required.");
 
         // Use first row for header names
-        // Use second row for data types
-        var dataTypes = new Type[colLength];
         var columnNames = new string[colLength];
-        var columns = new List<ColumnInfo>(colLength);
         var nameCounts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
         for (var i = 0; i < colLength; i++)
         {
-            dataTypes[i] = data[1, i] switch
-            {
-                double => typeof(double),
-                bool => typeof(bool),
-                _ => typeof(string)
-            };
             var originalName = data[0, i]?.ToString() ?? string.Empty;
             var name = string.IsNullOrWhiteSpace(originalName) ? $"col_{i + 1}" : originalName;
             if (nameCounts.TryGetValue(name, out var count))
@@ -57,7 +48,32 @@ internal static class ExcelRangeTableFunctions
                 nameCounts[name] = 1;
             }
             columnNames[i] = name;
-            columns.Add(new ColumnInfo(name, dataTypes[i]));
+        }
+
+        // For data types, default to string
+        // and let the first double or bool value 
+        // override the type for that column
+        var dataTypes = new Type[colLength];
+        var columns = new List<ColumnInfo>(colLength);
+        for (var i = 0; i < colLength; i++)
+        {
+            dataTypes[i] = typeof(string); // Default to string
+
+            for (var j = 1; j < rowLength; j++)
+            {
+                if (data[j, i] is double)
+                {
+                    dataTypes[i] = typeof(double);
+                    break;
+                }
+                else if (data[j, i] is bool)
+                {
+                    dataTypes[i] = typeof(bool);
+                    break;
+                }
+            }
+
+            columns.Add(new ColumnInfo(columnNames[i], dataTypes[i]));
         }
 
         var dataList = new List<RowDataAndTypes>();
@@ -87,6 +103,13 @@ internal static class ExcelRangeTableFunctions
         {
             try
             {
+                if (row[i] == DBNull.Value)
+                {
+                    // Write null value
+                    writers[i].WriteNull(rowIndex);
+                    continue;
+                }
+
                 switch (types[i])
                 {
                     case { } t when t == typeof(double):
@@ -102,13 +125,8 @@ internal static class ExcelRangeTableFunctions
             }
             catch (Exception)
             {
-                // Write default values for the specific type
-                if (types[i] == typeof(double))
-                    writers[i].WriteValue(double.NaN, rowIndex);
-                else if (types[i] == typeof(bool))
-                    writers[i].WriteValue(false, rowIndex);
-                else
-                    writers[i].WriteValue(string.Empty, rowIndex);
+                // Write null value on error
+                writers[i].WriteNull(rowIndex);
             }
         }
     }
