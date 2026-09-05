@@ -60,6 +60,7 @@ public static class DuckDbHelper
         var blobField = new bool[reader.FieldCount];
         var decimalField = new bool[reader.FieldCount];
         var floatField = new bool[reader.FieldCount];
+        var doubleField = new bool[reader.FieldCount];
         var timeSpanField = new bool[reader.FieldCount];
         var timeTzField = new bool[reader.FieldCount];
         var dateOnlyField = new bool[reader.FieldCount];
@@ -75,6 +76,7 @@ public static class DuckDbHelper
             blobField[i] = fieldType == typeof(Stream);
             decimalField[i] = fieldType == typeof(decimal);
             floatField[i] = fieldType == typeof(float);
+            doubleField[i] = fieldType == typeof(double);
             timeSpanField[i] = fieldType == typeof(TimeSpan);
             timeTzField[i] = fieldType == typeof(DateTimeOffset);
             dateOnlyField[i] = fieldType == typeof(DateOnly);
@@ -91,15 +93,13 @@ public static class DuckDbHelper
         {
             var rowData = new object[reader.FieldCount];
             for (var i = 0; i < reader.FieldCount; i++)
-                if (bigIntField[i])
+                if (reader.IsDBNull(i))
+                {
+                    rowData[i] = ExcelError.ExcelErrorNA;
+                }
+                else if (bigIntField[i])
                 {
                     rowData[i] = reader.GetInt64(i);
-                }
-                else if (blobField[i])
-                {
-                    var stream = reader.GetStream(i);
-                    using var streamReader = new StreamReader(stream, Encoding.UTF8);
-                    rowData[i] = streamReader.ReadToEnd();
                 }
                 else if (decimalField[i])
                 {
@@ -107,7 +107,17 @@ public static class DuckDbHelper
                 }
                 else if (floatField[i])
                 {
-                    rowData[i] = (double) reader.GetFloat(i);
+                    rowData[i] = (double)reader.GetFloat(i);
+                }
+                else if (doubleField[i])
+                {
+                    rowData[i] = reader.GetDouble(i);
+                }
+                else if (blobField[i])
+                {
+                    var stream = reader.GetStream(i);
+                    using var streamReader = new StreamReader(stream, Encoding.UTF8);
+                    rowData[i] = streamReader.ReadToEnd();
                 }
                 else if (timeSpanField[i])
                 {
@@ -122,7 +132,7 @@ public static class DuckDbHelper
                 else if (timeTzField[i])
                 {
                     rowData[i] = new DateTime(1899, 12, 30) +
-                                 TimeSpan.FromTicks(((DateTimeOffset) reader.GetValue(i)).Ticks);
+                                 TimeSpan.FromTicks(((DateTimeOffset)reader.GetValue(i)).Ticks);
                 }
                 else if (dateOnlyField[i])
                 {
@@ -134,22 +144,17 @@ public static class DuckDbHelper
                 }
                 else if (jsonSerializeField[i])
                 {
-                    rowData[i] = reader.IsDBNull(i)
-                        ? (object)ExcelError.ExcelErrorNA
-                        : JsonSerializer.Serialize(reader.GetValue(i));
+                    rowData[i] = JsonSerializer.Serialize(reader.GetValue(i));
                 }
                 else
                 {
                     rowData[i] = reader.GetValue(i);
                 }
 
-            // Convert DBNulls and nan/inf to ExcelNA and ExcelNum
+            // Convert nan/inf to ExcelNum
             for (var i = 0; i < reader.FieldCount; i++)
                 switch (rowData[i])
                 {
-                    case DBNull:
-                        rowData[i] = ExcelError.ExcelErrorNA;
-                        break;
                     case double d when double.IsNaN(d) || double.IsInfinity(d):
                     case float f when float.IsNaN(f) || float.IsInfinity(f):
                         rowData[i] = ExcelError.ExcelErrorNum;
