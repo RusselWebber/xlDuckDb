@@ -93,26 +93,25 @@ public static class DuckDbHelper
         {
             var rowData = new object[reader.FieldCount];
             for (var i = 0; i < reader.FieldCount; i++)
-                if (bigIntField[i])
+                if (reader.IsDBNull(i))
                 {
-                    rowData[i] = reader.IsDBNull(i) ? ExcelError.ExcelErrorNum : reader.GetInt64(i);
+                    rowData[i] = ExcelError.ExcelErrorNA;
+                }
+                else if (bigIntField[i])
+                {
+                    rowData[i] = reader.GetInt64(i);
                 }
                 else if (decimalField[i])
                 {
-                    rowData[i] = reader.IsDBNull(i) ? ExcelError.ExcelErrorNum : decimal.ToDouble(reader.GetDecimal(i));
+                    rowData[i] = decimal.ToDouble(reader.GetDecimal(i));
                 }
                 else if (floatField[i])
                 {
-                    rowData[i] = reader.IsDBNull(i) ? ExcelError.ExcelErrorNum : (double)reader.GetFloat(i);
+                    rowData[i] = (double)reader.GetFloat(i);
                 }
                 else if (doubleField[i])
                 {
-                    rowData[i] = reader.IsDBNull(i) ? ExcelError.ExcelErrorNum : reader.GetDouble(i);
-                }
-                else if (reader.IsDBNull(i))
-                {
-                    rowData[i] = ExcelError.ExcelErrorNA;
-                    continue;
+                    rowData[i] = reader.GetDouble(i);
                 }
                 else if (blobField[i])
                 {
@@ -152,7 +151,7 @@ public static class DuckDbHelper
                     rowData[i] = reader.GetValue(i);
                 }
 
-            // Convert nan/inf to ExcelNA and ExcelNum
+            // Convert nan/inf to ExcelNum
             for (var i = 0; i < reader.FieldCount; i++)
                 switch (rowData[i])
                 {
