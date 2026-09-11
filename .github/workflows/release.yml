@@ -8,15 +8,26 @@ on:
     tags:
     - 'v*'
 
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: windows-2022
+    timeout-minutes: 20
     permissions:
       contents: write
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+    - name: Validate release tag
+      shell: pwsh
+      run: |
+        if ($env:GITHUB_REF_NAME -notmatch '^v\d+\.\d+\.\d+$') {
+          throw "Release tag '$env:GITHUB_REF_NAME' must use vMAJOR.MINOR.PATCH format"
+        }
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5
       with:
         dotnet-version: 8.0.x
     - name: Restore dependencies
@@ -26,13 +37,29 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal -c Release
 
+    - name: Publish release files
+      run: |
+        dotnet publish ./xlDuckDb/xlDuckDb.csproj --no-restore --no-build -c Release -o ./publish
+        Copy-Item ./xlDuckDb/bin/Release/net8.0-windows/xlDuckDb64.* ./publish -Force
+
+    - name: Verify release artifact
+      run: |
+        if (!(Test-Path ./publish/xlDuckDb64.xll)) {
+          throw "Expected xlDuckDb64.xll was not produced"
+        }
     - name: ZIP release artifact
-      run: Compress-Archive -Path ./xlDuckDb/bin/Release/net8.0-windows/* -Destination xlduckdb.zip
+      run: Compress-Archive -Path ./publish/* -Destination xlduckdb.zip
+    - name: Create release checksum
+      shell: pwsh
+      run: |
+        $hash = (Get-FileHash ./xlduckdb.zip -Algorithm SHA256).Hash
+        "$hash  xlduckdb.zip" | Set-Content ./xlduckdb.zip.sha256
 
     # Create release
-    - uses: ncipollo/release-action@v1
+    - uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd # v1
       with:
-        artifacts: "xlduckdb.zip"
+        artifacts: "xlduckdb.zip,xlduckdb.zip.sha256"
+        generateReleaseNotes: true
         makelatest: true
-        allowupdates: true
+        allowUpdates: false
         artifacterrorsfailbuild: true
