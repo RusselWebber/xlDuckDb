@@ -33,6 +33,7 @@ jobs:
     - uses: ncipollo/release-action@v1
       with:
         artifacts: "xlduckdb.zip"
+        generateReleaseNotes: true
         makelatest: true
         allowupdates: true
         artifacterrorsfailbuild: true
