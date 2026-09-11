@@ -8,13 +8,24 @@ on:
     tags:
     - 'v*'
 
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: windows-2022
+    timeout-minutes: 20
     permissions:
       contents: write
     steps:
     - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+    - name: Validate release tag
+      shell: pwsh
+      run: |
+        if ($env:GITHUB_REF_NAME -notmatch '^v\d+\.\d+\.\d+$') {
+          throw "Release tag '$env:GITHUB_REF_NAME' must use vMAJOR.MINOR.PATCH format"
+        }
     - name: Setup .NET
       uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
       with:
@@ -38,12 +49,17 @@ jobs:
         }
     - name: ZIP release artifact
       run: Compress-Archive -Path ./publish/* -Destination xlduckdb.zip
+    - name: Create release checksum
+      shell: pwsh
+      run: |
+        $hash = (Get-FileHash ./xlduckdb.zip -Algorithm SHA256).Hash
+        "$hash  xlduckdb.zip" | Set-Content ./xlduckdb.zip.sha256
 
     # Create release
     - uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd # v1
       with:
-        artifacts: "xlduckdb.zip"
+        artifacts: "xlduckdb.zip,xlduckdb.zip.sha256"
         generateReleaseNotes: true
         makelatest: true
-        allowupdates: true
+        allowUpdates: false
         artifacterrorsfailbuild: true
