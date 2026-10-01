@@ -63,3 +63,4 @@ jobs:
         makelatest: true
         allowUpdates: true
         artifacterrorsfailbuild: true
+        immutableCreate: true
