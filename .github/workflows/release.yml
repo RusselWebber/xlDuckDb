@@ -61,5 +61,5 @@ jobs:
         artifacts: "xlduckdb.zip,xlduckdb.zip.sha256"
         generateReleaseNotes: true
         makelatest: true
-        allowUpdates: false
+        allowUpdates: true
         artifacterrorsfailbuild: true
