@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.12.35506.116
+# Visual Studio Version 18
+VisualStudioVersion = 18.11.12224.323 insiders
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xlDuckDb", "xlDuckDb\xlDuckDb.csproj", "{2CD9A8CA-E2A7-4C5A-A360-FABB24A1E006}"
 EndProject
@@ -24,5 +24,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C78F5DF4-8D49-476B-BE4E-58CF54FECDCA}
 	EndGlobalSection
 EndGlobal
